@@ -1,4 +1,5 @@
 # Legal Agent
+@argahv
 
 **Legal Agent** is an AI-assisted contract review platform aimed at high-stakes **Master Service Agreements (MSAs)** and similar vendor paper. Teams upload agreements, extract structured clauses, score legal and operational risk, and align suggestions with an enterprise **playbook** backed by **pgvector** retrieval. Human reviewers stay in the loop for approvals, redlines, and immutable audit history.
 
