@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * NEUMORPHISM (SOFT UI) — CSS TOKENS
+ * Cool monochromatic base #E0E5EC; depth via dual RGBA shadows (see tailwind.config).
+ * HSL channels without hsl() wrapper for Tailwind opacity modifiers.
+ * Dark mode: cooler grey fallback (neumorphic shadows are tuned for light).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+@layer base {
+  :root {
+    /* Surface #E0E5EC */
+    --background: 213 24% 91%;
+    --foreground: 210 14% 28%;
+
+    --card: 213 24% 91%;
+    --card-foreground: 210 14% 28%;
+
+    --popover: 213 24% 91%;
+    --popover-foreground: 210 14% 28%;
+
+    /*
+     * Primary — UI/UX Pro Max "Trust & Authority" / Enterprise Gateway
+     * Authority blue (~#2563EB); avoids AI purple gradient trope for legal SaaS.
+     */
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary / surface actions — same clay; depth from shadow in components */
+    --secondary: 213 24% 91%;
+    --secondary-foreground: 210 14% 28%;
+
+    /* Highlight — corporate blue secondary (~#3B82F6) */
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Success accent — #38B2AC (badges, positive) */
+    --success: 174 60% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --muted: 213 18% 86%;
+    --muted-foreground: 220 9% 46%;
+
+    --destructive: 0 84% 58%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Spec: no harsh borders — color matches surface; separators use opacity elsewhere */
+    --border: 213 24% 91%;
+    --input: 213 24% 91%;
+    --ring: 221 83% 53%;
+
+    --radius: 1rem;
+
+    /* Placeholder #A0AEC0 — OK for placeholders only */
+    --placeholder: 214 20% 69%;
+
+    --chart-1: 221 83% 53%;
+    --chart-2: 174 60% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 25 95% 53%;
+    --chart-5: 0 84% 58%;
+  }
+
+  .dark {
+    --background: 210 16% 16%;
+    --foreground: 213 24% 92%;
+
+    --card: 210 16% 18%;
+    --card-foreground: 213 24% 92%;
+
+    --popover: 210 16% 18%;
+    --popover-foreground: 213 24% 92%;
+
+    --primary: 217 91% 62%;
+    --primary-foreground: 210 16% 12%;
+
+    --secondary: 210 14% 22%;
+    --secondary-foreground: 213 24% 92%;
+
+    --accent: 217 85% 48%;
+    --accent-foreground: 213 24% 98%;
+
+    --success: 174 55% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --muted: 210 14% 22%;
+    --muted-foreground: 215 16% 65%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 14% 24%;
+    --input: 210 14% 20%;
+    --ring: 217 91% 62%;
+
+    --placeholder: 215 16% 55%;
+
+    --chart-1: 217 91% 62%;
+    --chart-2: 174 55% 45%;
+    --chart-3: 38 85% 55%;
+    --chart-4: 25 90% 58%;
+    --chart-5: 0 62% 55%;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.22);
+    color: hsl(var(--foreground));
+  }
+
+  .font-display {
+    font-family: var(--font-display), system-ui, sans-serif;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    * {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+    .hover\:scale-105:hover,
+    .hover\:scale-\[1\.02\]:hover {
+      transform: none !important;
+    }
+  }
+}

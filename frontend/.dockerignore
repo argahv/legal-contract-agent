@@ -1,0 +1,11 @@
+.git
+node_modules
+.next
+out
+.turbo
+*.log
+.env
+.env.*
+!.env.example
+coverage
+.vercel
