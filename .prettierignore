@@ -1,0 +1,7 @@
+# Prettier — respect EditorConfig; ignore generated + deps
+node_modules
+.next
+dist
+build
+coverage
+*.min.js

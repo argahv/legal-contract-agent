@@ -1,0 +1,12 @@
+# Root context (if used for aggregate builds)
+.git
+.github
+**/.venv
+**/__pycache__
+**/node_modules
+**/.next
+.env
+.env.*
+!.env.example
+*.md
+docs/

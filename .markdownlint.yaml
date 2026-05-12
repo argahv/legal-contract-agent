@@ -1,0 +1,7 @@
+# Relax rules for long-form legal/technical prose.
+default: true
+MD013: false
+MD036: false
+MD040: false
+MD049: false
+MD060: false

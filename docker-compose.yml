@@ -1,0 +1,117 @@
+# Legal Agent — local full-stack composition (db + API + Next.js).
+# Do not run `docker compose up` from automation; developers start via `make up`.
+name: legal-agent
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: legal-agent-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-legal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-legal}
+      POSTGRES_DB: ${POSTGRES_DB:-legal_agent}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init-pgvector.sql:/docker-entrypoint-initdb.d/01-pgvector.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-legal} -d ${POSTGRES_DB:-legal_agent}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - legal-agent
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: legal-agent-backend
+    restart: unless-stopped
+    env_file:
+      - path: .env.example
+        required: false
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://legal:legal@db:5432/legal_agent}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+    command:
+      [
+        "uvicorn",
+        "app.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+      ]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import socket; s=socket.create_connection(('127.0.0.1',8000),2); s.close()\"",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+    networks:
+      - legal-agent
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: legal-agent-frontend
+    restart: unless-stopped
+    env_file:
+      - path: .env.example
+        required: false
+      - path: .env
+        required: false
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    networks:
+      - legal-agent
+
+  # ---------------------------------------------------------------------------
+  # Future: uncomment when moving long jobs off FastAPI (Arq / Celery workers).
+  # ---------------------------------------------------------------------------
+  # worker:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: legal-agent-worker
+  #   restart: unless-stopped
+  #   env_file:
+  #     - ./.env
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   command: ["arq", "app.worker.WorkerSettings"]
+  #   networks:
+  #     - legal-agent
+
+volumes:
+  pgdata:
+
+networks:
+  legal-agent:
+    driver: bridge
